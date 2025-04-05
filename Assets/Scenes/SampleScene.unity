@@ -752,8 +752,8 @@ GameObject:
   m_Component:
   - component: {fileID: 625759003}
   - component: {fileID: 625759002}
-  - component: {fileID: 625759005}
   - component: {fileID: 625759004}
+  - component: {fileID: 625759005}
   m_Layer: 0
   m_Name: Audio Source
   m_TagString: Untagged
@@ -770,7 +770,7 @@ AudioSource:
   m_GameObject: {fileID: 625759001}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 24300002, guid: 9683104e17a524644a77cc562785c163, type: 2}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: abbcdc31eecceec4c9eb89438ab1a87f, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0

@@ -1,10 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Adrenak.UniMic;
 using TMPro;
-using Unity.Collections;
 using UnityEngine;
-using UnityEngine.Audio;
 using UnityEngine.UI;
 
 public class USBVC : MonoBehaviour {
@@ -15,6 +13,7 @@ public class USBVC : MonoBehaviour {
     private List<string> currentDevices;
     private List<WebCamTexture> webcamTextures;
     private Mic.Device[] micsList;
+    private bool firstStart;
 
     private void Awake() {
         Mic.Init();
@@ -28,10 +27,7 @@ public class USBVC : MonoBehaviour {
     }
 
     public void ToggleMenu() {
-        if (_menu.gameObject.activeSelf)
-            _menu.gameObject.SetActive(false);
-        else
-            _menu.gameObject.SetActive(true);
+        _menu.gameObject.SetActive(!_menu.gameObject.activeSelf);
     }
 
     public void ExitApp() {
@@ -40,15 +36,20 @@ public class USBVC : MonoBehaviour {
 
     private void InitializeAll() {
         foreach (var item in devices) {
-            currentDevices.Add(item.name);
-            webcamTextures.Add(new WebCamTexture(item.name, 1920, 1080, 60));
+            Debug.Log(item.name);
+            if (item.name.Contains("Camera (NVIDIA Broadcast)") || item.name.Contains("OBS Virtual Camera")) {
+                Debug.Log("Virtual Camera detected");
+            }
+            else {
+                currentDevices.Add(item.name);
+                webcamTextures.Add(new WebCamTexture(item.name, 1920, 1080, 60));
+            }
         }
 
         micsList = new Mic.Device[currentDevices.Count];
         for (var i = 0; i < micsList.Length; i++)
-            foreach (var mic in Mic.AvailableDevices)
-                if (mic.Name.Contains(currentDevices[i]))
-                    micsList[i] = mic;
+            foreach (var mic in Mic.AvailableDevices.Where(mic => mic.Name.Contains(currentDevices[i])))
+                micsList[i] = mic;
 
         _menu.ClearOptions();
         _menu.AddOptions(currentDevices);
@@ -61,15 +62,23 @@ public class USBVC : MonoBehaviour {
         _image.color = Color.white;
         _image.texture = webcamTextures[device];
         webcamTextures[device].Play();
-        if (_audio.Device != null)
-            _audio.Device.StopRecording();
+        _audio.Device?.StopRecording();
         _audio.Device = micsList[device];
-        if (_audio.Device != null) _audio.Device.StartRecording();
+        _audio.Device?.StartRecording();
     }
 
     public void SelectDevice() {
+        Invoke(nameof(ReloadDevice), .1f);
         InitializeCamera(_menu.value);
         PlayerPrefs.SetInt("ID", _menu.value);
         ToggleMenu();
+    }
+
+    private void ReloadDevice() {
+        if (firstStart) return;
+        Debug.Log("Reloading device");
+        firstStart = true;
+        SelectDevice();
+        _menu.gameObject.SetActive(false);
     }
 }
