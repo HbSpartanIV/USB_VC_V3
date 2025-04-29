@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Adrenak.UniMic;
@@ -20,6 +21,10 @@ public class USBVC : MonoBehaviour {
         devices = WebCamTexture.devices;
         currentDevices = new List<string>();
         webcamTextures = new List<WebCamTexture>();
+    }
+
+    private void Update() {
+        Cursor.visible = _menu.gameObject.activeSelf;
     }
 
     private void Start() {
