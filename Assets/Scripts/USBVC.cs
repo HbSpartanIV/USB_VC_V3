@@ -17,6 +17,8 @@ public class USBVC : MonoBehaviour {
     private bool firstStart;
 
     private void Awake() {
+        Application.targetFrameRate = -1;
+        QualitySettings.vSyncCount = 0;
         Mic.Init();
         devices = WebCamTexture.devices;
         currentDevices = new List<string>();
@@ -40,16 +42,15 @@ public class USBVC : MonoBehaviour {
     }
 
     private void InitializeAll() {
-        foreach (var item in devices) {
-            Debug.Log(item.name);
+        foreach (var item in devices)
+            //Debug.Log(item.name);
             if (item.name.Contains("Camera (NVIDIA Broadcast)") || item.name.Contains("OBS Virtual Camera")) {
-                Debug.Log("Virtual Camera detected");
+                //Debug.Log("Virtual Camera detected");
             }
             else {
                 currentDevices.Add(item.name);
-                webcamTextures.Add(new WebCamTexture(item.name, 1920, 1080, 60));
+                webcamTextures.Add(new WebCamTexture(item.name, 1920 * 2, 1080 * 2, 60));
             }
-        }
 
         micsList = new Mic.Device[currentDevices.Count];
         for (var i = 0; i < micsList.Length; i++)
@@ -69,7 +70,7 @@ public class USBVC : MonoBehaviour {
         webcamTextures[device].Play();
         _audio.Device?.StopRecording();
         _audio.Device = micsList[device];
-        _audio.Device?.StartRecording();
+        _audio.Device?.StartRecording(32);
     }
 
     public void SelectDevice() {
@@ -81,7 +82,7 @@ public class USBVC : MonoBehaviour {
 
     private void ReloadDevice() {
         if (firstStart) return;
-        Debug.Log("Reloading device");
+        //Debug.Log("Reloading device");
         firstStart = true;
         SelectDevice();
         _menu.gameObject.SetActive(false);

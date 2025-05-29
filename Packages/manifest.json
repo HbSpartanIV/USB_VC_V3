@@ -52,7 +52,6 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "com.adrenak.unimic": "3.2.4"
+    "com.unity.modules.xr": "1.0.0"
   }
 }
